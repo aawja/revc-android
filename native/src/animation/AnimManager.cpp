@@ -1282,6 +1282,14 @@ CAnimManager::CreateAnimAssocGroups(void)
 		const AnimAssocDefinition *def = &ms_aAnimAssocDefinitions[i];
 		group->groupId = i;
 		group->firstAnimId = def->animDescs[0].animId;
+		// ===== 防御性诊断代码开始 =====
+debug("正在创建动画组: %s\n", def->blockName);
+if (clump == nil || def->animNames == nil) {
+    debug("警告: 组 %s 指针为空，跳过，避免崩溃！\n", def->blockName);
+    if (clump) RpClumpDestroy(clump);
+    continue;
+}
+// ===== 防御性诊断代码结束 =====
 		group->CreateAssociations(def->blockName, clump, def->animNames, def->numAnims);
 		for(j = 0; j < group->numAssociations; j++)
 			// GetAnimation(i) in III (but it's in LoadAnimFiles), GetAnimation(group->animDesc[j].animId) in VC
