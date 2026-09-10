@@ -62,6 +62,20 @@ CAnimBlendAssociation::FreeAnimBlendNodeArray(void)
 void
 CAnimBlendAssociation::Init(RpClump *clump, CAnimBlendHierarchy *hier)
 {
+	// ===== 终极防御护盾 =====
+if (clump == nullptr || hier == nullptr) {
+    __android_log_print(ANDROID_LOG_ERROR, "reVC", "拦截崩溃: clump 或 hier 为空!");
+    return;
+}
+if (hier->numSequences <= 0 || hier->numSequences > 500) {
+    __android_log_print(ANDROID_LOG_ERROR, "reVC", "拦截崩溃: 序列数量异常 (%d)！", hier->numSequences);
+    return; 
+}
+if (hier->sequences == nullptr) {
+    __android_log_print(ANDROID_LOG_ERROR, "reVC", "拦截崩溃: 序列数据为空!");
+    return;
+}
+// ========================
 	int i;
 	AnimBlendFrameData *frame;
 
