@@ -235,7 +235,7 @@ DrawAndroidBuildOverlay(void)
 	arch = "x86";
 #endif
 
-	snprintf(overlay, ARRAY_SIZE(overlay), "t.me/weikton | librevc (%s) | %d FPS", arch, (int32)(FramesPerSecond + 0.5f));
+	snprintf(overlay, ARRAY_SIZE(overlay), "%d FPS", arch, (int32)(FramesPerSecond + 0.5f));
 	AsciiToUnicode(overlay, overlayW);
 
 	CFont::SetScale(SCREEN_SCALE_X(0.45f), SCREEN_SCALE_Y(0.75f));
