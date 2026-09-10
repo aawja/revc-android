@@ -15,7 +15,7 @@
 #include "Frontend.h"
 #include "General.h"
 #include "Renderer.h"
-#include "PostFX.h"
+#include "postfx.h"
 #include "IniFile.h"
 #include "WaterLevel.h"
 #define JNI_WRAPPER extern "C" JNIEXPORT
