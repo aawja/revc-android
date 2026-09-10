@@ -28,10 +28,10 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleRelease
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: revc-debug-apk
-        path: app/build/outputs/apk/debug/*.apk
+        name: revc-release-apk
+        path: app/build/outputs/apk/release/*.apk
