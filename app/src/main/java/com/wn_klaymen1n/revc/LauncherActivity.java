@@ -164,7 +164,7 @@ public class LauncherActivity extends Activity {
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, REQUEST_MANAGE_STORAGE);
-        Toast.makeText(this, "Please grant 'All Files Access'", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "请授予'所有文件访问'权限", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -174,10 +174,10 @@ public class LauncherActivity extends Activity {
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Logger.i("Launcher", "Storage permission granted");
-                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "权限已授予", Toast.LENGTH_SHORT).show();
             } else {
                 Logger.w("Launcher", "Storage permission denied");
-                Toast.makeText(this, "No permissions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "未授予权限", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -191,10 +191,10 @@ public class LauncherActivity extends Activity {
             case REQUEST_MANAGE_STORAGE: {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
                     Logger.i("Launcher", "All files access granted");
-                    Toast.makeText(this, "All Files Access granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "已授予所有文件访问权限", Toast.LENGTH_SHORT).show();
                 } else {
                     Logger.w("Launcher", "All files access denied");
-                    Toast.makeText(this, "All Files Access denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "未授予所有文件访问权限", Toast.LENGTH_SHORT).show();
                 }
             }
             case 123:
@@ -218,12 +218,12 @@ public class LauncherActivity extends Activity {
         {
             Logger.e("Launcher", "gta3.img not found at: " + file.getAbsolutePath());
             AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-            dlgAlert.setMessage("An error occurred while trying to start the application."
+            dlgAlert.setMessage("尝试启动应用时发生错误。"
                 + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
-                + "Error: " + "gta3.img not found. Check your file path");
-                dlgAlert.setTitle("Game files not found");
-                dlgAlert.setPositiveButton("Exit",
+                + "错误: " + "未找到 gta3.img。请检查文件路径");
+                dlgAlert.setTitle("未找到游戏文件");
+                dlgAlert.setPositiveButton("退出",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog,int id) {
@@ -317,6 +317,12 @@ public class LauncherActivity extends Activity {
                             .setTitle(R.string.action_about);
                     AlertDialog dialog = builder.create();
                     dialog.show();
+                    return true;
+                } else if (item.getItemId() == R.id.action_toggle_log) {
+                    boolean currentState = Logger.isFileLoggingEnabled();
+                    Logger.setFileLoggingEnabled(!currentState);
+                    String msg = !currentState ? "调试日志已开启" : "调试日志已关闭";
+                    Toast.makeText(LauncherActivity.this, msg, Toast.LENGTH_SHORT).show();
                     return true;
                 } else
                     return false;

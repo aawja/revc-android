@@ -65,20 +65,17 @@ public class LoadingActivity extends Activity {
         }
         Logger.i("Loading", "gta3.img found, size: " + gameImg.length() + " bytes");
 
-        sleepBriefly(120);
-        postProgress(35, getString(R.string.loading_copying_assets));
+        // 直接复制资源，移除不必要的延迟
+        postProgress(30, getString(R.string.loading_copying_assets));
         Logger.i("Loading", "Copying mobile UI assets");
         LauncherActivity.copyMobileUiAssets(this, gamePath);
 
-        sleepBriefly(160);
-        postProgress(70, getString(R.string.loading_preparing_runtime));
+        postProgress(60, getString(R.string.loading_preparing_runtime));
         LauncherActivity.setCurrentGamePath(gamePath);
         Logger.d("Loading", "Runtime preparation complete");
 
-        sleepBriefly(140);
-        postProgress(100, getString(R.string.loading_starting_game));
+        postProgress(90, getString(R.string.loading_starting_game));
         Logger.i("Loading", "Starting SDL activity");
-        sleepBriefly(180);
 
         handler.post(() -> {
             Intent intent = new Intent(LoadingActivity.this, SDLActivity.class);

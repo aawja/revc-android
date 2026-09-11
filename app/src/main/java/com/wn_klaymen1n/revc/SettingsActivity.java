@@ -22,7 +22,7 @@ public class SettingsActivity extends Activity {
         ));
 
         TextView text = new TextView(this);
-        text.setText("Settings screen is not implemented yet.");
+        text.setText("设置页面尚未实现。");
         text.setGravity(Gravity.CENTER);
         text.setTextSize(20.0f);
         root.addView(text, new LinearLayout.LayoutParams(
