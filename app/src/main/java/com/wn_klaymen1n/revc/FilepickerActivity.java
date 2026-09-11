@@ -22,12 +22,14 @@ public class FilepickerActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.i("FilePicker", "onCreate started");
         setContentView(R.layout.filepicker);
 
         Button applyBtn = findViewById(R.id.select_folder);
         applyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Logger.i("FilePicker", "Folder selected: " + currentDir.getAbsolutePath());
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("path", currentDir.getAbsolutePath());
                 setResult(RESULT_OK, resultIntent);
@@ -36,6 +38,7 @@ public class FilepickerActivity extends Activity {
         });
 
         currentDir = Environment.getExternalStorageDirectory();
+        Logger.d("FilePicker", "Initial directory: " + currentDir.getAbsolutePath());
 
         fileLV = findViewById(R.id.fileListView);
         DisplayFiles();
@@ -43,9 +46,11 @@ public class FilepickerActivity extends Activity {
             File selectedDir = dirs.get(position);
             if(dirs.get(position) == FileAdapter.BACK_BUTTON_MARKER)
             {
+                Logger.d("FilePicker", "Back button clicked");
                 goBack();
                 return;
             }
+            Logger.d("FilePicker", "Navigating to: " + selectedDir.getAbsolutePath());
             currentDir = selectedDir;
             DisplayFiles();
         });
@@ -58,6 +63,7 @@ public class FilepickerActivity extends Activity {
 
     private void DisplayFiles()
     {
+        Logger.d("FilePicker", "DisplayFiles called for: " + currentDir.getAbsolutePath());
         File directory = currentDir;
 
         TextView dirText = findViewById(R.id.directoryText);
@@ -76,6 +82,7 @@ public class FilepickerActivity extends Activity {
             dirs.add(0, FileAdapter.BACK_BUTTON_MARKER);
         }
         Collections.sort(dirs, (f1, f2) -> f1.getName().compareToIgnoreCase(f2.getName()));
+        Logger.d("FilePicker", "Found " + dirs.size() + " directories");
         FileAdapter adapter = new FileAdapter(this, dirs);
         fileLV.setAdapter(adapter);
     }
