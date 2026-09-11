@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.os.Build;
 import android.view.MenuItem;
 import android.view.Window;
@@ -60,14 +59,18 @@ public class LauncherActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.init();
+        Logger.i("Launcher", "onCreate started");
         lastInstance = this;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_main);
 
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        Logger.d("Launcher", "SharedPreferences loaded");
 
         editText = findViewById(R.id.editText);
         String savedPath = prefs.getString("game_path", "");
+        Logger.d("Launcher", "Saved game path: " + (savedPath.isEmpty() ? "(empty)" : savedPath));
         if(savedPath == "")
             savedPath = "/storage/emulated/0/revc";
         editText.setText(savedPath);
@@ -84,6 +87,7 @@ public class LauncherActivity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
                 String newText = s.toString();
+                Logger.v("Launcher", "Game path changed to: " + newText);
                 getSharedPreferences("app_prefs", MODE_PRIVATE)
                         .edit()
                         .putString("game_path", newText)
@@ -95,6 +99,7 @@ public class LauncherActivity extends Activity {
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Logger.d("Launcher", "Menu button clicked");
                 showMenu();
             }
         });
@@ -103,6 +108,7 @@ public class LauncherActivity extends Activity {
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Logger.d("Launcher", "Browse button clicked, opening file picker");
                 Intent intent = new Intent(LauncherActivity.this, FilepickerActivity.class);
                 startActivityForResult(intent, 123);
             }
@@ -112,17 +118,24 @@ public class LauncherActivity extends Activity {
         launchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Logger.i("Launcher", "Launch button clicked");
                 startGta();
             }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
+                Logger.i("Launcher", "Requesting all files access (Android 11+)");
                 requestAllFilesAccess();
+            } else {
+                Logger.d("Launcher", "All files access already granted");
             }
         } else {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Logger.i("Launcher", "Requesting storage permission");
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+            } else {
+                Logger.d("Launcher", "Storage permission already granted");
             }
         }
 
@@ -136,13 +149,18 @@ public class LauncherActivity extends Activity {
     }
 
     public static void openSettingsFromNative() {
-        if (lastInstance == null) return;
+        if (lastInstance == null) {
+            Logger.w("Launcher", "openSettingsFromNative called but lastInstance is null");
+            return;
+        }
+        Logger.i("Launcher", "Opening settings from native code");
         Intent intent = new Intent(lastInstance, SettingsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         lastInstance.startActivity(intent);
     }
 
     private void requestAllFilesAccess() {
+        Logger.d("Launcher", "Launching all-files access settings intent");
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, REQUEST_MANAGE_STORAGE);
@@ -152,10 +170,13 @@ public class LauncherActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Logger.d("Launcher", "onRequestPermissionsResult: requestCode=" + requestCode);
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Logger.i("Launcher", "Storage permission granted");
                 Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
             } else {
+                Logger.w("Launcher", "Storage permission denied");
                 Toast.makeText(this, "No permissions", Toast.LENGTH_SHORT).show();
             }
         }
@@ -164,29 +185,38 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Logger.d("Launcher", "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
         switch (requestCode)
         {
             case REQUEST_MANAGE_STORAGE: {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+                    Logger.i("Launcher", "All files access granted");
                     Toast.makeText(this, "All Files Access granted", Toast.LENGTH_SHORT).show();
                 } else {
+                    Logger.w("Launcher", "All files access denied");
                     Toast.makeText(this, "All Files Access denied", Toast.LENGTH_SHORT).show();
                 }
             }
             case 123:
                 if (resultCode == RESULT_OK) {
-
-                    editText.setText(data.getStringExtra("path"));
+                    String path = data.getStringExtra("path");
+                    Logger.i("Launcher", "File picker returned path: " + path);
+                    editText.setText(path);
+                } else {
+                    Logger.d("Launcher", "File picker cancelled or failed");
                 }
 
         }
     }
 
     public void startGta() {
+        Logger.i("Launcher", "startGta called");
         String gamepath = editText.getText().toString();
+        Logger.d("Launcher", "Game path: " + gamepath);
         File file = new File(gamepath + "/models/gta3.img");
         if(!file.exists())
         {
+            Logger.e("Launcher", "gta3.img not found at: " + file.getAbsolutePath());
             AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
             dlgAlert.setMessage("An error occurred while trying to start the application."
                 + System.getProperty("line.separator")
@@ -203,6 +233,7 @@ public class LauncherActivity extends Activity {
         dlgAlert.create().show();
         return;
         }
+        Logger.i("Launcher", "Game files found, starting game with path: " + gamepath);
         setCurrentGamePath(gamepath);
         Intent intent = new Intent(LauncherActivity.this, LoadingActivity.class);
         intent.putExtra(LoadingActivity.EXTRA_GAME_PATH, gamepath);
@@ -210,38 +241,48 @@ public class LauncherActivity extends Activity {
     }
 
     static public void initEnv() {
+        Logger.d("Launcher", "initEnv called");
         String gamepath = currentGamePath;
         if ((gamepath == null || gamepath.isEmpty()) && editText != null) {
             gamepath = editText.getText().toString();
+            Logger.d("Launcher", "Using editText value for gamepath");
         }
         if (gamepath == null || gamepath.isEmpty()) {
             gamepath = "/storage/emulated/0/revc";
+            Logger.w("Launcher", "No gamepath set, using default: " + gamepath);
         }
+        Logger.i("Launcher", "Setting environment with gamepath: " + gamepath);
         setenv(gamepath);
         File file = new File(gamepath);
-        Log.d("REVC", "Game directory: " + file.exists());
+        Logger.d("Launcher", "Game directory exists: " + file.exists() + ", path: " + file.getAbsolutePath());
     }
 
     public static void setCurrentGamePath(String gamepath) {
+        Logger.d("Launcher", "setCurrentGamePath: " + gamepath);
         currentGamePath = gamepath;
     }
 
     public static void copyMobileUiAssets(Activity activity, String gamepath) {
+        Logger.i("Launcher", "copyMobileUiAssets started for path: " + gamepath);
         File outDir = new File(gamepath, "mobileui");
         if (!outDir.exists() && !outDir.mkdirs()) {
-            Log.w("REVC", "Failed to create mobileui directory: " + outDir.getAbsolutePath());
+            Logger.e("Launcher", "Failed to create mobileui directory: " + outDir.getAbsolutePath());
             return;
         }
 
+        int copied = 0;
+        int skipped = 0;
         for (String assetName : MOBILE_UI_ASSETS) {
             File outFile = new File(gamepath, assetName);
             if (outFile.exists() && outFile.length() > 0) {
+                Logger.v("Launcher", "Asset already exists, skipping: " + assetName);
+                skipped++;
                 continue;
             }
 
             File parent = outFile.getParentFile();
             if (parent != null && !parent.exists() && !parent.mkdirs()) {
-                Log.w("REVC", "Failed to create asset parent: " + parent.getAbsolutePath());
+                Logger.w("Launcher", "Failed to create asset parent: " + parent.getAbsolutePath());
                 continue;
             }
 
@@ -252,10 +293,13 @@ public class LauncherActivity extends Activity {
                 while ((read = in.read(buffer)) != -1) {
                     out.write(buffer, 0, read);
                 }
+                copied++;
+                Logger.d("Launcher", "Copied asset: " + assetName + " (" + outFile.length() + " bytes)");
             } catch (IOException e) {
-                Log.w("REVC", "Failed to copy asset " + assetName + " to " + outFile.getAbsolutePath(), e);
+                Logger.e("Launcher", "Failed to copy asset " + assetName + " to " + outFile.getAbsolutePath(), e);
             }
         }
+        Logger.i("Launcher", "copyMobileUiAssets complete: copied=" + copied + ", skipped=" + skipped);
     }
 
     void showMenu() {
