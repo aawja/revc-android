@@ -223,12 +223,17 @@ CFileMgr::Initialise(void)
 void
 CFileMgr::ChangeDir(const char *dir)
 {
-	if(*dir == '\\'){
+	char normalizedDir[256];
+	strncpy(normalizedDir, dir, sizeof(normalizedDir) - 1);
+	normalizedDir[sizeof(normalizedDir) - 1] = '\0';
+	normalize_path_separators(normalizedDir);
+
+	if(*normalizedDir == '/'){
 		strcpy(ms_dirName, ms_rootDirName);
-		dir++;
+		normalizedDir++;
 	}
-	if(*dir != '\0'){
-		strcat(ms_dirName, dir);
+	if(*normalizedDir != '\0'){
+		strcat(ms_dirName, normalizedDir);
 	}
 	mychdir(ms_dirName);
 }
@@ -237,9 +242,14 @@ CFileMgr::ChangeDir(const char *dir)
 void
 CFileMgr::SetDir(const char *dir)
 {
+	char normalizedDir[256];
+	strncpy(normalizedDir, dir, sizeof(normalizedDir) - 1);
+	normalizedDir[sizeof(normalizedDir) - 1] = '\0';
+	normalize_path_separators(normalizedDir);
+
 	strcpy(ms_dirName, ms_rootDirName);
-	if(*dir != '\0'){
-		strcat(ms_dirName, dir);
+	if(*normalizedDir != '\0'){
+		strcat(ms_dirName, normalizedDir);
 	}
 	mychdir(ms_dirName);
 }
