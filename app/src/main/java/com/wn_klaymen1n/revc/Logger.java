@@ -39,7 +39,7 @@ public final class Logger {
     private static final int MAX_LOG_FILE_SIZE = 2 * 1024 * 1024; // 2 MB, rotate after this
 
     private static volatile int minLevel = DEBUG;
-    private static volatile boolean fileLoggingEnabled = true;
+    private static volatile boolean fileLoggingEnabled = false;
 
     private static final SimpleDateFormat TIMESTAMP_FMT =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
@@ -91,6 +91,10 @@ public final class Logger {
      */
     public static void setFileLoggingEnabled(boolean enabled) {
         fileLoggingEnabled = enabled;
+    }
+
+    public static boolean isFileLoggingEnabled() {
+        return fileLoggingEnabled;
     }
 
     // ── Public log methods ──────────────────────────────────────────
