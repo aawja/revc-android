@@ -1860,11 +1860,6 @@ main(int argc, char *argv[])
 						FrontEndMenuManager.m_bGameNotLoaded = true;
 						
 						FrontEndMenuManager.m_bStartUpFrontEndRequested = true;
-#ifdef ANDROID
-						FrontEndMenuManager.m_nCurrScreen = MENUPAGE_NEW_GAME;
-						FrontEndMenuManager.m_nCurrOption = 0;
-						FrontEndMenuManager.DoSettingsBeforeStartingAGame();
-#endif
 						
 						if ( defaultFullscreenRes )
 						{
