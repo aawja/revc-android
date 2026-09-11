@@ -100,6 +100,15 @@ void FileTimeToSystemTime(time_t* writeTime, SYSTEMTIME* out) {
 	tm *ptm = gmtime(writeTime);
 	tmToSystemTime(ptm, out);
 }
+
+// Convert Windows-style backslashes to forward slashes
+void normalize_path_separators(char *path) {
+	if (!path) return;
+	while (*path) {
+		if (*path == '\\') *path = '/';
+		path++;
+	}
+}
 #endif
 
 // Because wchar length differs between platforms.

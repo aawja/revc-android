@@ -58,6 +58,9 @@ FILE *_fcaseopen(char const *filename, char const *mode);
 #define fcaseopen _fcaseopen
 int _caserename(const char *old_filename, const char *new_filename);
 #define caserename _caserename
+
+// Convert Windows-style backslashes to forward slashes
+void normalize_path_separators(char *path);
 #endif
 
 #ifdef RW_GL31
