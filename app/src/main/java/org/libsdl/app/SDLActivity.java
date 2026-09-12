@@ -1009,13 +1009,13 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         title.setTextColor(Color.WHITE);
         title.setTextSize(22.0f);
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
-        title.setText(R.string.loading_preparing_game);
+        title.setText(com.wn_klaymen1n.revc.R.string.loading_preparing_game);
 
         TextView subtitle = new TextView(this);
         subtitle.setTextColor(Color.parseColor("#CCFFFFFF"));
         subtitle.setTextSize(14.0f);
         subtitle.setPadding(0, 12, 0, 0);
-        subtitle.setText(R.string.loading_starting_game);
+        subtitle.setText(com.wn_klaymen1n.revc.R.string.loading_starting_game);
 
         LinearProgressIndicator progress = new LinearProgressIndicator(this);
         LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
