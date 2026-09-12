@@ -640,10 +640,9 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             return;
         }
 
-        // Default system back button behavior.
-        if (!isFinishing()) {
-            super.onBackPressed();
-        }
+        // Send Escape key to native code for pause menu
+        SDLActivity.onNativeKeyDown(KeyEvent.KEYCODE_ESCAPE);
+        SDLActivity.onNativeKeyUp(KeyEvent.KEYCODE_ESCAPE);
     }
 
     // Called by JNI from SDL.
@@ -1010,13 +1009,13 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         title.setTextColor(Color.WHITE);
         title.setTextSize(22.0f);
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
-        title.setText("Preparing game");
+        title.setText(R.string.loading_preparing_game);
 
         TextView subtitle = new TextView(this);
         subtitle.setTextColor(Color.parseColor("#CCFFFFFF"));
         subtitle.setTextSize(14.0f);
         subtitle.setPadding(0, 12, 0, 0);
-        subtitle.setText("Starting native runtime");
+        subtitle.setText(R.string.loading_starting_game);
 
         LinearProgressIndicator progress = new LinearProgressIndicator(this);
         LinearLayout.LayoutParams progressParams = new LinearLayout.LayoutParams(
@@ -1062,7 +1061,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                     String trimmedTitle = title.trim();
                     if (trimmedTitle.equalsIgnoreCase("Load scene") ||
                             trimmedTitle.contains("Load scene") ||
-                            trimmedTitle.equalsIgnoreCase("Loadscene")) {
+                            trimmedTitle.equalsIgnoreCase("Loadscene") ||
+                            trimmedTitle.contains("加载场景")) {
                         shouldRemove = true;
                     }
                 }
@@ -1072,7 +1072,8 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                     Log.d("SDL", "setNativeLoadingOverlay: checking subtitle '" + trimmedSubtitle + "'");
                     if (trimmedSubtitle.equalsIgnoreCase("Load scene") ||
                             trimmedSubtitle.contains("Load scene") ||
-                            trimmedSubtitle.equalsIgnoreCase("Loadscene")) {
+                            trimmedSubtitle.equalsIgnoreCase("Loadscene") ||
+                            trimmedSubtitle.contains("加载场景")) {
                         shouldRemove = true;
                     }
                 }
