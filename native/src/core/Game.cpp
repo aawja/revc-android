@@ -329,7 +329,7 @@ bool CGame::InitialiseOnceAfterRW(void)
 	CPedStats::Initialise();
 	CTimeCycle::Initialise();
 #ifdef GTA_PS2
-	LoadingScreen("Loading the Game", "Initialising audio", GetRandomSplashScreen());
+	LoadingScreen("正在加载游戏", "初始化音频", GetRandomSplashScreen());
 #endif
 	DMAudio.Initialise();
 
@@ -389,7 +389,7 @@ bool CGame::Initialise(const char* datFile)
 	currArea = AREA_MAIN_MAP;
 
 	PUSH_MEMID(MEMID_TEXTURES);
-	LoadingScreen("Loading the Game", "Loading generic textures", GetRandomSplashScreen());
+	LoadingScreen("正在加载游戏", "加载通用纹理", GetRandomSplashScreen());
 	gameTxdSlot = CTxdStore::AddTxdSlot("generic");
 	CTxdStore::Create(gameTxdSlot);
 	CTxdStore::AddRef(gameTxdSlot);
@@ -399,12 +399,12 @@ bool CGame::Initialise(const char* datFile)
 	CustomPipes::SetTxdFindCallback();
 #endif
 
-	LoadingScreen("Loading the Game", "Loading particles", nil);
+	LoadingScreen("正在加载游戏", "加载粒子效果", nil);
 	int particleTxdSlot = CTxdStore::AddTxdSlot("particle");
 	CTxdStore::LoadTxd(particleTxdSlot, "MODELS/PARTICLE.TXD");
 	CTxdStore::AddRef(particleTxdSlot);
 	CTxdStore::SetCurrentTxd(gameTxdSlot);
-	LoadingScreen("Loading the Game", "Setup game variables", nil);
+	LoadingScreen("正在加载游戏", "设置游戏变量", nil);
 	POP_MEMID();
 
 #ifdef GTA_PS2
@@ -459,27 +459,27 @@ bool CGame::Initialise(const char* datFile)
 	CFileLoader::LoadLevel("DATA\\DEFAULT.DAT");
 	CFileLoader::LoadLevel(datFile);
 
-	LoadingScreen("Loading the Game", "Add Particles", nil);
+	LoadingScreen("正在加载游戏", "添加粒子效果", nil);
 	CWorld::AddParticles();
 	CVehicleModelInfo::LoadVehicleColours();
 	CVehicleModelInfo::LoadEnvironmentMaps();
 	CTheZones::PostZoneCreation();
 	POP_MEMID();
 
-	LoadingScreen("Loading the Game", "Setup paths", nil);
+	LoadingScreen("正在加载游戏", "设置路径", nil);
 	ThePaths.PreparePathData();
 	for (int i = 0; i < NUMPLAYERS; i++)
 		CWorld::Players[i].Clear();
 	CWorld::Players[0].LoadPlayerSkin();
 	TestModelIndices();
 
-	LoadingScreen("Loading the Game", "Setup water", nil);
+	LoadingScreen("正在加载游戏", "设置水面", nil);
 	CWaterLevel::Initialise("DATA\\WATER.DAT");
 	TheConsole.Init();
 	CDraw::SetFOV(120.0f);
 	CDraw::ms_fLODDistance = 500.0f;
 
-	LoadingScreen("Loading the Game", "Setup streaming", nil);
+	LoadingScreen("正在加载游戏", "设置流式加载", nil);
 	CStreaming::LoadInitialVehicles();
 	CStreaming::LoadInitialPeds();
 	CStreaming::RequestBigBuildings(LEVEL_GENERIC);
@@ -487,7 +487,7 @@ bool CGame::Initialise(const char* datFile)
 	CStreaming::RemoveIslandsNotUsed(currLevel);
 	printf("Streaming uses %zuK of its memory", CStreaming::ms_memoryUsed / 1024); // original modifier was %d
 
-	LoadingScreen("Loading the Game", "Load animations", GetRandomSplashScreen());
+	LoadingScreen("正在加载游戏", "加载动画", GetRandomSplashScreen());
 	PUSH_MEMID(MEMID_ANIMATION);
 	CAnimManager::LoadAnimFiles();
 	POP_MEMID();
@@ -500,19 +500,19 @@ bool CGame::Initialise(const char* datFile)
 #ifdef SCREEN_DROPLETS
 	ScreenDroplets::Initialise();
 #endif
-	LoadingScreen("Loading the Game", "Find big buildings", nil);
+	LoadingScreen("正在加载游戏", "查找大型建筑", nil);
 	CRenderer::Init();
 
-	LoadingScreen("Loading the Game", "Setup game variables", nil);
+	LoadingScreen("正在加载游戏", "设置游戏变量", nil);
 	CRadar::Initialise();
 	CRadar::LoadTextures();
 	CWeapon::InitialiseWeapons();
 
-	LoadingScreen("Loading the Game", "Setup traffic lights", nil);
+	LoadingScreen("正在加载游戏", "设置交通灯", nil);
 	CTrafficLights::ScanForLightsOnMap();
 	CRoadBlocks::Init();
 
-	LoadingScreen("Loading the Game", "Setup game variables", nil);
+	LoadingScreen("正在加载游戏", "设置游戏变量", nil);
 	CPopulation::Initialise();
 	CWorld::PlayerInFocus = 0;
 	CCoronas::Init();
@@ -526,13 +526,13 @@ bool CGame::Initialise(const char* datFile)
 	CSceneEdit::Initialise();
 #endif
 
-	LoadingScreen("Loading the Game", "Load scripts", nil);
+	LoadingScreen("正在加载游戏", "加载脚本", nil);
 	PUSH_MEMID(MEMID_SCRIPT);
 	CTheScripts::Init();
 	CGangs::Initialise();
 	POP_MEMID();
 
-	LoadingScreen("Loading the Game", "Setup game variables", nil);
+	LoadingScreen("正在加载游戏", "设置游戏变量", nil);
 	CClock::Initialise(1000);
 	CHeli::InitHelis();
 	CCranes::InitCranes();
@@ -548,8 +548,8 @@ bool CGame::Initialise(const char* datFile)
 	CBridge::Init();
 	CGarages::Init();
 
-	LoadingScreen("Loading the Game", "Position dynamic objects", nil);
-	LoadingScreen("Loading the Game", "Initialise vehicle paths", nil);
+	LoadingScreen("正在加载游戏", "定位动态物体", nil);
+	LoadingScreen("正在加载游戏", "初始化车辆路径", nil);
 
 	CTrain::InitTrains();
 	CPlane::InitPlanes();
@@ -557,7 +557,7 @@ bool CGame::Initialise(const char* datFile)
 	CRecordDataForChase::Init();
 	CReplay::Init();
 
-	LoadingScreen("Loading the Game", "Start script", nil);
+	LoadingScreen("正在加载游戏", "启动脚本", nil);
 #ifdef PS2_MENU
 	if ( !TheMemoryCard.m_bWantToLoad )
 #endif
@@ -567,7 +567,7 @@ bool CGame::Initialise(const char* datFile)
 		TheCamera.Process();
 	}
 
-	LoadingScreen("Loading the Game", "Load scene", nil);
+	LoadingScreen("正在加载游戏", "加载场景", nil);
 	CCollision::ms_collisionInMemory = currLevel;
 	for (int i = 0; i < MAX_PADS; i++)
 		CPad::GetPad(i)->Clear(true);
