@@ -15,4 +15,5 @@
     <string name="loading_copying_assets">同步移动界面资源</string>
     <string name="loading_preparing_runtime">准备启动环境</string>
     <string name="loading_starting_game">启动原生运行时</string>
+    <string name="loading_preparing_game">准备游戏</string>
 </resources>
