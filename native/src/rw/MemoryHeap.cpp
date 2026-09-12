@@ -181,8 +181,8 @@ CMemoryHeap::Malloc(uint32 size)
 			CStreaming::RemoveBigBuildings(LEVEL_SUBURBAN);
 		}
 		else {
-			LoadingScreen("NO MORE MEMORY", nil, nil);
-			LoadingScreen("NO MORE MEMORY", nil, nil);
+			LoadingScreen("内存不足", nil, nil);
+			LoadingScreen("内存不足", nil, nil);
 		}
 		CGame::TidyUpMemory(true, false);
 	}
