@@ -196,7 +196,7 @@ ValidateVersion()
 		}
 	}
 
-	LoadingScreen("Invalid version", NULL, NULL);
+	LoadingScreen("无效版本", NULL, NULL);
 	
 	while(true)
 	{
@@ -1885,7 +1885,7 @@ void TheGame(void)
 
 	Const char *splash = GetRandomSplashScreen(); // inlined here
 
-	LoadingScreen("Starting Game", NULL, splash);
+	LoadingScreen("启动游戏", NULL, splash);
 
 #ifdef GTA_PS2
 	// TODO(MIAMI): not checked yet
