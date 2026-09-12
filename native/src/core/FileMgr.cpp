@@ -230,9 +230,8 @@ CFileMgr::ChangeDir(const char *dir)
 
 	if(*normalizedDir == '/'){
 		strcpy(ms_dirName, ms_rootDirName);
-		normalizedDir++;
-	}
-	if(*normalizedDir != '\0'){
+		strcat(ms_dirName, normalizedDir + 1);
+	}else if(*normalizedDir != '\0'){
 		strcat(ms_dirName, normalizedDir);
 	}
 	mychdir(ms_dirName);
