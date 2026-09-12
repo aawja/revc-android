@@ -52,6 +52,9 @@ long _dwOperatingSystemVersion;
 #include "AnimViewer.h"
 #include "Font.h"
 #include "MemoryMgr.h"
+#ifdef ANDROID
+#include "skel/android/android.h"
+#endif
 
 #define MAX_SUBSYSTEMS		(16)
 
@@ -1870,6 +1873,7 @@ main(int argc, char *argv[])
 						
 						gGameState = GS_FRONTEND;
 						TRACE("gGameState = GS_FRONTEND;");
+						AndroidSetLoadingOverlay(nil, nil, false);
 						break;
 					}
 					
